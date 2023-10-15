@@ -47,7 +47,6 @@ app.post('/convert', upload.single('htmlFile'), (req, res) => {
     });
 });
 
-// Rest of your code...
 
     // Convert HTML to DOCX
     // const docx = htmlToDocx.asBlob(htmlContent);
