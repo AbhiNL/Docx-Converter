@@ -1,109 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-// const blobUtil = require('blob-util');
-const util = require('util');
-const stream = require('stream');
-
-const blobToBuffer = require('blob-to-buffer');
-const docx=require('docx')
-const fs = require('fs');
-const htmlToDocx = require('html-docx-js');
-const app = express();
-const port = 3000;
-
-app.get("/",(req,res)=>{
-        res.sendFile(__dirname+"/body.html");
-    });
-
-const upload = multer({ dest:'./uploads' });
-
-// Rest of your code...
-
-app.post('/convert', upload.single('htmlFile'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).send('No file was uploaded.');
-    }
-
-    // Process the uploaded file
-    // const htmlContent = req.file.buffer.toString('utf-8');
-    const htmlContent=fs.readFileSync(req.file.path, 'utf-8');
-
-    // Rest of your conversion code...
-    const docxBlob = htmlToDocx.asBlob(htmlContent);
-    // fs.writeFileSync('converted.docx', docx);
-
-// Convert a Blob to a buffer
-function blobToBuffer(blob) {
-    return new Promise((resolve, reject) => {
-        const reader = new stream.PassThrough();
-        reader.end(Buffer.from(blob));
-        const chunks = [];
-        
-        reader.on('data', (chunk) => {
-            chunks.push(chunk);
-        });
-
-        reader.on('end', () => {
-            const buffer = Buffer.concat(chunks);
-            resolve(buffer);
-        });
-
-        reader.on('error', (err) => {
-            reject(err);
-        });
-    });
-}
-
-// Assuming 'docxBlob' is your Blob
-blobToBuffer(docxBlob)
-    .then((buffer) => {
-        // Write the buffer to a file
-        fs.writeFileSync('converted.docx', buffer);
-        // Do any other necessary operations
-    })
-    .catch((err) => {
-        console.error(err);
-    });
-
-
-
-    
-
-
-
-    res.download('converted.docx', 'converted.docx', (err) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Error downloading the converted file.');
-        } else {
-            // Clean up: Delete the temporary DOCX file
-            fs.unlinkSync('converted.docx');
-        }
-    });
-});
-
-// Rest of your code...
-
-    // Convert HTML to DOCX
-    // const docx = htmlToDocx.asBlob(htmlContent);
-
-    // Save the DOCX file
-    // fs.writeFileSync('converted.docx', docx);
-
-    // res.download('converted.docx', 'converted.docx', (err) => {
-    //     if (err) {
-    //         console.error(err);
-    //         res.status(500).send('Error downloading the converted file.');
-    //     } else {
-    //         // Clean up: Delete the temporary DOCX file
-    //         fs.unlinkSync('converted.docx');
-    //     }
-    // });
-
-app.listen(port, () => {
-    const express = require('express');
-const multer = require('multer');
-// const blobUtil = require('blob-util');
+const blobUtil = require('blob-util');
 const util = require('util');
 const stream = require('stream');
 
@@ -120,22 +17,20 @@ app.get("/",(req,res)=>{
 
 const upload = multer({ dest:'./history' });
 
-// Rest of your code...
+
 
 app.post('/convert', upload.single('htmlFile'), (req, res) => {
     if (!req.file) {
         return res.status(400).send('No file was uploaded.');
     }
 
-    // Process the uploaded file
-    // const htmlContent = req.file.buffer.toString('utf-8');
     const htmlContent=fs.readFileSync(req.file.path, 'utf-8');
 
-    // Rest of your conversion code...
-    const docxBlob = htmlToDocx.asBlob(htmlContent);
-    // fs.writeFileSync('converted.docx', docx);
 
-// Convert a Blob to a buffer
+    const docxBlob = htmlToDocx.asBlob(htmlContent);
+
+
+
 function blobToBuffer(blob) {
     return new Promise((resolve, reject) => {
         const reader = new stream.PassThrough();
@@ -157,11 +52,12 @@ function blobToBuffer(blob) {
     });
 }
 
-// Assuming 'docxBlob' is your Blob
+
 blobToBuffer(docxBlob)
     .then((buffer) => {
         // Write the buffer to a file
-        fs.writeFileSync('converted.docx', buffer);
+      
+        fs.writeFileSync(`${__dirname}/output/converted.docx`, buffer);
         // Do any other necessary operations
     })
     .catch((err) => {
@@ -185,26 +81,9 @@ blobToBuffer(docxBlob)
     });
 });
 
-// Rest of your code...
 
-    // Convert HTML to DOCX
-    // const docx = htmlToDocx.asBlob(htmlContent);
-
-    // Save the DOCX file
-    // fs.writeFileSync('converted.docx', docx);
-
-    // res.download('converted.docx', 'converted.docx', (err) => {
-    //     if (err) {
-    //         console.error(err);
-    //         res.status(500).send('Error downloading the converted file.');
-    //     } else {
-    //         // Clean up: Delete the temporary DOCX file
-    //         fs.unlinkSync('converted.docx');
-    //     }
-    // });
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 
-});
 });
