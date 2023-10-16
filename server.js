@@ -6,8 +6,22 @@ const app = express();
 const port = 3000;
 
 app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/body.html");
+    res.sendFile(__dirname + "/index.html");
 });
+
+app.get("/about.html", (req, res) => {
+    res.sendFile(__dirname + "/about.html");
+});
+
+app.get("/contact.html", (req, res) => {
+    res.sendFile(__dirname + "/contact.html");
+});
+
+app.get('/style.css', (req, res) => {
+    res.sendFile(__dirname + '/style.css');
+});
+
+
 
 const upload = multer({ dest: './history' });
 
